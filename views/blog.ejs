@@ -4,7 +4,23 @@
 <head>
     <%- include('./partials/head') %>
         <style>
+            .options {
+                display: none;
+                cursor: pointer;
+            }
 
+            .comment-container:hover .options {
+                display: block;
+            }
+
+            .creator-info_container{
+                display: flex;
+                justify-content: space-between;
+            }
+            li {
+                list-style-type: none;
+              }
+              
         </style>
         <title>Blog</title>
 </head>
@@ -24,7 +40,6 @@
             <img src="<%=blog.createdBy.pfpUrl%>" width="50px">
             <%= blog.createdBy.fullName%>
         </div>
-        <%- include('./partials/scripts') %>
             <div class="container mt-4">
                 <h1> Comments (<%= comments.length %>)
                 </h1>
@@ -33,8 +48,8 @@
                 <div class="container mt-3">
                     <form method="post" action="/blog/comment/<%=blog._id%>">
                         <div class="mb-3">
-                            <textarea class="form-control" id="exampleFormControlTextarea1" name='content'
-                                rows="3" placeholder="Add a comment"></textarea>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" name='content' rows="3"
+                                placeholder="Add a comment"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Comment</button>
                     </form>
@@ -47,12 +62,30 @@
                     <div class=" container mt-3">
                         <% comments.forEach(comment=> { %>
                             <div class="comment-container">
-                                <img src="<%=comment.createdBy.pfpUrl%>" width="50px">
-                                <%= comment.createdBy.fullName%>
-                                    <pre><%= comment.content %></pre>
+                                <div class="creator-info_container">
+                                    <div class="creator-info">
+                                        <img src="<%=comment.createdBy.pfpUrl%>" width="50px">
+                                        <%= comment.createdBy.fullName%>
+                                    </div>
+                                    <div class="options">
+                                        <!-- <span class="ms-3">...</span> -->
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                              <li><a class="dropdown-item" href="/blog/delete">Delete</a></li>
+                                              <li><a class="dropdown-item" href="/blog/edit">Edit</a></li>
+                                            </ul>
+                                          </li>
+                                    </div>
+                                </div>
+
+                                <pre><%= comment.content %></pre>
+
                             </div>
                             <% }) %>
                     </div>
+                    <%- include('./partials/scripts') %>
 
 </body>
 
