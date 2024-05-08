@@ -13,14 +13,14 @@
                 display: block;
             }
 
-            .creator-info_container{
+            .creator-info_container {
                 display: flex;
                 justify-content: space-between;
             }
+
             li {
                 list-style-type: none;
-              }
-              
+            }
         </style>
         <title>Blog</title>
 </head>
@@ -40,52 +40,79 @@
             <img src="<%=blog.createdBy.pfpUrl%>" width="50px">
             <%= blog.createdBy.fullName%>
         </div>
-            <div class="container mt-4">
-                <h1> Comments (<%= comments.length %>)
-                </h1>
-            </div>
-            <% if (locals.user) { %>
-                <div class="container mt-3">
-                    <form method="post" action="/blog/comment/<%=blog._id%>">
-                        <div class="mb-3">
-                            <textarea class="form-control" id="exampleFormControlTextarea1" name='content' rows="3"
-                                placeholder="Add a comment"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Comment</button>
-                    </form>
-                </div>
-                <% } %>
-
-
-                    <!-- Comment section -->
-
-                    <div class=" container mt-3">
-                        <% comments.forEach(comment=> { %>
-                            <div class="comment-container">
-                                <div class="creator-info_container">
-                                    <div class="creator-info">
-                                        <img src="<%=comment.createdBy.pfpUrl%>" width="50px">
-                                        <%= comment.createdBy.fullName%>
-                                    </div>
-                                    <div class="options">
-                                        <!-- <span class="ms-3">...</span> -->
-                                        <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                              <li><a class="dropdown-item" href="/blog/delete">Delete</a></li>
-                                              <li><a class="dropdown-item" href="/blog/edit">Edit</a></li>
-                                            </ul>
-                                          </li>
-                                    </div>
-                                </div>
-
-                                <pre><%= comment.content %></pre>
-
-                            </div>
-                            <% }) %>
+        <div class="container mt-4">
+            <h1> Comments (<%= comments.length %>)
+            </h1>
+        </div>
+        <% if (locals.user) { %>
+            <div class="container mt-3">
+                <form method="post" action="/blog/comment/<%=blog._id%>">
+                    <div class="mb-3">
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name='content' rows="3"
+                            placeholder="Add a comment"></textarea>
                     </div>
-                    <%- include('./partials/scripts') %>
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                </form>
+            </div>
+            <% } %>
+
+
+                <!-- Comment section -->
+
+                <div class=" container mt-3">
+                    <% comments.forEach(comment=> { %>
+                        <div class="comment-container">
+                            <div class="creator-info_container">
+                                <div class="creator-info">
+                                    <img src="<%=comment.createdBy.pfpUrl%>" width="50px">
+                                    <%= comment.createdBy.fullName%>
+                                </div>
+                                <div class="options">
+                                    <!-- <span class="ms-3">...</span> -->
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><button class="dropdown-item" data-comment-id="<%= comment._id %>"
+                                                    onclick="deleteComment('<%= comment._id %>')" class="delete-btn">Delete</button></li>
+                                            <li><button class="dropdown-item"
+                                                    data-comment-id="<%= comment._id %>">Edit</button></li>
+                                        </ul>
+                                    </li>
+                                </div>
+                            </div>
+
+                            <pre><%= comment.content %></pre>
+
+                        </div>
+                        <% }) %>
+                </div>
+                <script>
+
+                    function deleteComment(commentId){
+                        console.log(commentId)
+                                fetch(`/blog/comment/${commentId}`, {
+                                    method: 'delete',
+                                    headers: { "Content-Type": "application/json" },
+                                }).then(response => {
+                                    if (response.ok) {
+                                        // Optionally, reload the page or remove the deleted comment from the DOM
+                                        location.reload();
+                                    } else {
+                                        console.error("Failed to delete comment");
+                                    }
+                                })
+                                    .catch(error => {
+                                        console.error("Error deleting comment:", error);
+    
+                                    })
+                    }
+
+                
+                    
+                </script>
+                <%- include('./partials/scripts') %>
 
 </body>
 

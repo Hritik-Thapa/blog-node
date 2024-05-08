@@ -1,4 +1,5 @@
 const express = require("express");
+const methodOverride = require('method-override');
 const Blog = require("../models/blog");
 const Comment = require("../models/comment");
 const multer = require("multer");
@@ -50,5 +51,14 @@ router.post('/comment/:blogId', async(req,res)=>{
         createdBy:req.user._id
     });
     return res.redirect(`/blog/${req.params.blogId}`);
+})
+
+router.route('/comment/:commentId').delete(async (req,res)=>{
+  const commentId=req.params.commentId;
+  const comment= await Comment.findById(commentId);
+  console.log(comment);
+  const blogId=comment.blogId;
+  await Comment.deleteOne({_id:commentId});
+  res.sendStatus(202);
 })
 module.exports = router;
