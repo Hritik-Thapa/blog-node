@@ -21,6 +21,10 @@
             li {
                 list-style-type: none;
             }
+
+            .comment--editor {
+                display: none;
+            }
         </style>
         <title>Blog</title>
 </head>
@@ -75,42 +79,81 @@
                                         </a>
                                         <ul class="dropdown-menu">
                                             <li><button class="dropdown-item" data-comment-id="<%= comment._id %>"
-                                                    onclick="deleteComment('<%= comment._id %>')" class="delete-btn">Delete</button></li>
+                                                    onclick="deleteComment('<%= comment._id %>')"
+                                                    class="delete-btn">Delete</button></li>
                                             <li><button class="dropdown-item"
-                                                    data-comment-id="<%= comment._id %>">Edit</button></li>
+                                                    onclick="editComment('<%= comment._id %>')"
+                                                    data-comment-id="<%= comment._id %>" class="edit-btn">Edit</button>
+                                            </li>
                                         </ul>
                                     </li>
                                 </div>
                             </div>
 
-                            <pre><%= comment.content %></pre>
+                            <pre class="comment__text"><%= comment.content %></pre>
 
                         </div>
+
+                        <div class="container mt-3 comment--editor">
+                            <div class="mb-3">
+                                <textarea class="form-control comment--edited" id="exampleFormControlTextarea1"
+                                    name='content' rows="3"><%= comment.content %></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="editRequest('<%= comment._id %>')">Comment</button>
+                        </div>
+
+
                         <% }) %>
                 </div>
                 <script>
 
-                    function deleteComment(commentId){
+
+                    function deleteComment(commentId) {
                         console.log(commentId)
-                                fetch(`/blog/comment/${commentId}`, {
-                                    method: 'delete',
-                                    headers: { "Content-Type": "application/json" },
-                                }).then(response => {
-                                    if (response.ok) {
-                                        // Optionally, reload the page or remove the deleted comment from the DOM
-                                        location.reload();
-                                    } else {
-                                        console.error("Failed to delete comment");
-                                    }
-                                })
-                                    .catch(error => {
-                                        console.error("Error deleting comment:", error);
-    
-                                    })
+                        fetch(`/blog/comment/${commentId}`, {
+                            method: 'delete',
+                            headers: { "Content-Type": "application/json" },
+                        }).then(response => {
+                            if (response.ok) {
+                                location.reload();
+                            } else {
+                                console.error("Failed to delete comment");
+                            }
+                        })
+                            .catch(error => {
+                                console.error("Error deleting comment:", error);
+
+                            })
                     }
 
-                
-                    
+                    function editComment(commentId) {
+                        const commentText = document.querySelector('.comment__text');
+                        const options = document.querySelector('.options');
+                        const editor = document.querySelector('.comment--editor');
+                        const comment = commentText.innerHTML;
+
+                        commentText.style.display = 'none';
+                        options.style.display = 'none';
+                        editor.style.display = 'block';
+                    }
+
+                    function editRequest(commentId) {
+                        console.log(document.querySelector(".comment--edited").value);
+                        const data = { text: document.querySelector(".comment--edited").value };
+                        fetch(`/blog/comment/${commentId}`, {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data)
+                        }).then(response => {
+                            if (response.ok) {
+                                location.reload();
+                                console.log('response ok')
+                            }
+                        }).catch(err => {
+                            console.error("Error updating comment:", err);
+                        })
+                    }
+
                 </script>
                 <%- include('./partials/scripts') %>
 
