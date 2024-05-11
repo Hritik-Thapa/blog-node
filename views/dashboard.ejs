@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+        <link rel="stylesheet" href="css/dashboard.css">
+        <title>HomePage</title>
+</head>
+
+<body>
+    <%- include('./partials/nav') %>
+        <div class="container mt-3">
+            <h1 class="text-center text-primary my-5">DashBoard</h1>
+            <div class="user-data">
+                <div class="pfp--container">
+                    <!-- <input type="file"> -->
+                    <p class="pfp__hover--text">Change your profile</p>
+                    <img src="<%= user.pfpUrl %>" id="pfp" alt="Profile Picture" />
+                    <input type="file" id="pfpInput" name="pfpImage" style="display:none">
+                </div>
+                <div class="user-info">
+                    <h4>
+                        <%= user.fullName %>
+                    </h4>
+                </div>
+            </div>    
+                <h1 class="text-center p-5">Your Blogs(<%=blogs.length%>)</h1>
+                <div class="blogs-container">
+                    <% blogs.forEach(blog=> { %>
+                        <a href="/blog/<%=blog._id%>">
+                            <div class="card" style="width: 18rem;">
+                                <img src="<%=blog.coverImageUrl%>" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <p class="card-text"><%= blog.body.substring(0,100)%></p>
+                                </div>
+                            </div>
+                        </a>
+                        <% }) %>
+                    </div>
+        </div>
+        <script>
+
+            const pfpBtn = document.getElementById("pfp");
+            pfpBtn.addEventListener('click', () => {
+                document.getElementById("pfpInput").click();
+            });
+            // Listen for changes in the file upload field (the event is fired when a file is selected).
+            
+            
+            document.getElementById("pfpInput")
+                .addEventListener('change', function(){
+                    const file=this.files[0];
+                    const formData=new FormData();
+                    formData.append('pfpImage',file);
+                    fetch(`/dashboard/changePfp?id=<%=user._id%>`,{
+                        method:'PATCH',
+                        body:formData
+                    }).then(response => {
+                        if (response.ok) {
+                            console.log('Profile picture changed successfully');
+                            location.reload();
+                        } else {
+                            console.error('Failed to change profile picture');
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+                    // Configure File Reader
+
+        </script>
+        <%- include('./partials/scripts') %>
+
+</body>
+
+</html>

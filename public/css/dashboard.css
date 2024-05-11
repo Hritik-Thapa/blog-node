@@ -1,0 +1,69 @@
+a{
+    text-decoration: none;
+}
+
+.pfp--container {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.pfp__hover--text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: black;
+    transform: translate(-50%,-50%);
+    display: none;
+    text-wrap: nowrap;
+}
+
+.pfp--container:hover .pfp__hover--text{
+    display: block;
+}
+
+.pfp--container:hover{
+    cursor: pointer;
+}
+.pfp--container:hover img {
+    opacity: 0.5;
+
+}
+
+.pfp--container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-data{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.user-info{
+    padding-left: 3em;
+}
+
+.blogs-container{
+    background-color: aliceblue;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+.blogs-container .card{
+    margin: 2em;
+    max-width: 450px;
+    overflow: hidden;
+}
+
+.card img{
+    max-height: 150px;
+    object-fit: cover;
+}

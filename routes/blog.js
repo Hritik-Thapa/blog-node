@@ -1,5 +1,4 @@
 const express = require("express");
-const methodOverride = require("method-override");
 const Blog = require("../models/blog");
 const Comment = require("../models/comment");
 const multer = require("multer");
@@ -7,7 +6,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve(`./public/uploads/`));
+    cb(null, path.resolve(`./public/uploads/blogCover/`));
   },
   filename: function (req, file, cb) {
     const fileName = `${Date.now()}-${file.originalname}`;
@@ -30,7 +29,7 @@ router.post("/add", upload.single("coverImage"), async (req, res) => {
     title,
     body,
     createdBy: req.user._id,
-    coverImageUrl: `/uploads/${req.file.filename}`,
+    coverImageUrl: `/uploads/blogCover/${req.file.filename}`,
   });
   return res.redirect(`/blog/${blog._id}`);
 });
@@ -64,14 +63,9 @@ router
     return res.sendStatus(202);
   })
   .patch(async (req, res) => {
-    console.log('patch request')
     const _id = req.params.commentId;
-    console.log(req.body)
     const newText = req.body.text;
-    const comment1=await Comment.findById(_id);
-    console.log(comment1)
     const comment=await Comment.findOneAndUpdate({ _id }, { $set: { content: newText } });
-    console.log(comment);
     return res.sendStatus(200);
   });
 module.exports = router;

@@ -12,6 +12,7 @@ mongoose
 
 const userRoute = require("./routes/user");
 const blogRoute = require("./routes/blog");
+const dashboardRoute = require("./routes/dashboard");
 
 const Blog = require("./models/blog");
 const { authenticateCookie } = require("./middlewares/authentication");
@@ -33,6 +34,7 @@ app.get("/", async (req, res) => {
   res.render("home", { user: req.user, blogs: blogList });
 });
 
+app.use("/dashboard", dashboardRoute);
 app.use("/blog", blogRoute);
 app.use("/user", userRoute);
 app.listen(PORT, () => console.log(`Server started at ${PORT}`));
