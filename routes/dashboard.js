@@ -22,11 +22,10 @@ router.get("/", async (req, res) => {
   const userId = req.user._id;
   const user = await User.findById(userId).select('-password -salt');
   const blogList = await Blog.find({ createdBy: userId });
-  res.render("dashboard", {
+  return res.render("dashboard", {
     user,
     blogs: blogList,
   });
-  res.render("dashboard");
 });
 
 router.patch('/changePfp',upload.single('pfpImage'), async (req,res)=>{

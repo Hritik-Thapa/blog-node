@@ -9,24 +9,70 @@
 <body>
     <%- include('./partials/nav') %>
         <div class="container mt-4">
-            <form method="post" action="/blog/add" enctype="multipart/form-data">
+            <form method="<%=locals.blog?'':'POST'%>" action="/blog/<%=locals.blog?`edit?id=` + blog._id:'add'%>"
+                enctype="multipart/form-data" id="blog-data">
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" aria-describedby="emailHelp">
+                    <input type="text" class="form-control" id="title" value="<%= locals.blog ? blog.title : '' %>"
+                        name="title" aria-describedby="emailHelp">
                 </div>
                 <div class="mb-3">
                     <label for="floatingTextarea2">Body</label>
-                    <textarea class="form-control" name="body" id="floatingTextarea2" style="height: 100px"></textarea>
+                    <textarea class="form-control body" name="body" id="body"
+                        style="height: 100px"><%= locals.blog ? blog.body : '' %></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="floatingTextarea2">Cover Image</label>
-                    <input type="file" class="form-control" id="coverImage" name="coverImage" aria-describedby="coverImage">
+                    <input type="file" class="form-control" id="coverImage" name="coverImage"
+                        aria-describedby="coverImage">
 
                 </div>
 
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
         </div>
+
+
+        <script>
+
+            const form = document.getElementById('blog-data');
+            form.addEventListener('submit', function (event) {
+                if (this.getAttribute('method') === "") {
+                    event.preventDefault();
+
+                    console.log('ejs edit trigger')
+                    console.log(document.getElementById('title').value)
+
+                    const formData = new FormData();
+
+                    formData.append('title', document.getElementById('title').value);
+                    formData.append('body', document.getElementById('body').value);
+                    formData.append('coverImage', document.getElementById('coverImage').files[0]);
+
+                    const action = this.getAttribute('action')
+
+                    
+                    if('<%=isEditing%>'){
+                        const blog = '<%= locals.blog%>';
+
+                    }
+
+                    fetch(action, {
+                        method: "PUT",
+                        body: formData,
+                    }).then(response => {
+                        if (response.ok) {
+                            location.replace(`/blog/${blog._id}`)
+                        }
+                    }).catch(err => {
+                        console.error("Error updating comment:", err);
+                    })
+                };
+            }
+
+            )
+
+        </script>
         <%- include('./partials/scripts') %>
 
 </body>

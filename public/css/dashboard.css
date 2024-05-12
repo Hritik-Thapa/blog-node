@@ -2,6 +2,21 @@ a{
     text-decoration: none;
 }
 
+li{
+    list-style: none;
+}
+
+.options{
+    position: absolute;
+    color: white;
+    right: 10px;
+    display: none;
+}
+
+.card:hover .options{
+    display: block;
+}
+
 .pfp--container {
     width: 200px;
     height: 200px;

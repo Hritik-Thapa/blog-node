@@ -30,6 +30,24 @@
                         <a href="/blog/<%=blog._id%>">
                             <div class="card" style="width: 18rem;">
                                 <img src="<%=blog.coverImageUrl%>" class="card-img-top" alt="...">
+
+                                <div class="options">
+                                    <!-- <span class="ms-3">...</span> -->
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><button class="dropdown-item"
+                                                    onclick="deleteBlog('<%= blog._id %>')"
+                                                    class="delete-btn">Delete</button></li>
+                                            <li><a href="/blog/edit?id=<%= blog.id %>"><button class="dropdown-item"
+                                                    class="edit-btn">Edit</button></a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </div>
+
                                 <div class="card-body">
                                     <p class="card-text"><%= blog.body.substring(0,100)%></p>
                                 </div>
@@ -40,10 +58,54 @@
         </div>
         <script>
 
+            //blog delete
+
+            function deleteBlog(blogId){
+                fetch(`blog/${blogId}`,{
+                    method:'DELETE',
+                    headers: { "Content-Type": "application/json" },
+                }).then(response => {
+                    if (response.ok) {
+                        console.log('ok aayo')
+                        location.reload();
+                    } else {
+                        console.error("Failed to delete blog");
+                    }
+                })
+                    .catch(error => {
+                        console.error("Error deleting blog:", error);
+
+                    })
+            }
+
+            //blog edit
+
+            function editBlog(blogId){
+                fetch(`/blog/edit?id=${blogId}`,{
+                    method:'GET',
+                    headers: { "Content-Type": "application/json" },
+                }).then(response => {
+                    if (response.ok) {
+                        console.log('ok aayo')
+                        //location.reload();
+                    } else {
+                        console.error("Failed to delete blog");
+                    }
+                })
+                    .catch(error => {
+                        console.error("Error deleting blog:", error);
+
+                    })
+            }
+
+
+            //pfp cahnge
+
             const pfpBtn = document.getElementById("pfp");
             pfpBtn.addEventListener('click', () => {
                 document.getElementById("pfpInput").click();
             });
+
             // Listen for changes in the file upload field (the event is fired when a file is selected).
             
             

@@ -71,23 +71,28 @@
                                     <img src="<%=comment.createdBy.pfpUrl%>" width="50px">
                                     <%= comment.createdBy.fullName%>
                                 </div>
-                                <div class="options">
-                                    <!-- <span class="ms-3">...</span> -->
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" role="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><button class="dropdown-item" data-comment-id="<%= comment._id %>"
-                                                    onclick="deleteComment('<%= comment._id %>')"
-                                                    class="delete-btn">Delete</button></li>
-                                            <li><button class="dropdown-item"
-                                                    onclick="editComment('<%= comment._id %>')"
-                                                    data-comment-id="<%= comment._id %>" class="edit-btn">Edit</button>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </div>
+                                <% if (user && JSON.stringify(comment.createdBy._id)===JSON.stringify(user._id) ) { %>
+                                    
+                                    <div class="options">
+                                        <!-- <span class="ms-3">...</span> -->
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" role="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><button class="dropdown-item" data-comment-id="<%= comment._id %>"
+                                                        onclick="deleteComment('<%= comment._id %>')"
+                                                        class="delete-btn">Delete</button></li>
+                                                <li><button class="dropdown-item"
+                                                        onclick="editComment('<%= comment._id %>')"
+                                                        data-comment-id="<%= comment._id %>"
+                                                        class="edit-btn">Edit</button>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </div>
+                                    <% } %>
+
                             </div>
 
                             <pre class="comment__text"><%= comment.content %></pre>
