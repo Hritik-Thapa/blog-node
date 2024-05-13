@@ -19,50 +19,55 @@
                     <input type="file" id="pfpInput" name="pfpImage" style="display:none">
                 </div>
                 <div class="user-info">
-                    <h4>
-                        <%= user.fullName %>
+                    <h4 id="username-display">
+                        <%= user.fullName %> <i class="fa-solid fa-pencil username-btn p-3" onClick="nameEdit()"></i>
                     </h4>
-                </div>
-            </div>    
-                <h1 class="text-center p-5">Your Blogs(<%=blogs.length%>)</h1>
-                <div class="blogs-container">
-                    <% blogs.forEach(blog=> { %>
-                        <a href="/blog/<%=blog._id%>">
-                            <div class="card" style="width: 18rem;">
-                                <img src="<%=blog.coverImageUrl%>" class="card-img-top" alt="...">
-
-                                <div class="options">
-                                    <!-- <span class="ms-3">...</span> -->
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" role="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><button class="dropdown-item"
-                                                    onclick="deleteBlog('<%= blog._id %>')"
-                                                    class="delete-btn">Delete</button></li>
-                                            <li><a href="/blog/edit?id=<%= blog.id %>"><button class="dropdown-item"
-                                                    class="edit-btn">Edit</button></a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </div>
-
-                                <div class="card-body">
-                                    <p class="card-text"><%= blog.body.substring(0,100)%></p>
-                                </div>
-                            </div>
-                        </a>
-                        <% }) %>
+                    <div id="username-editor">
+                        <input type="text" value="<%= user.fullName %>" class="form-control" id="username-edit">
+                        <button class="btn btn-primary mt-3" onClick="editRequest('<%= user._id %>')">Submit</button>
                     </div>
+                </div>
+            </div>
+            <h1 class="text-center p-5">Your Blogs(<%=blogs.length%>)</h1>
+            <div class="blogs-container">
+                <% blogs.forEach(blog=> { %>
+                    <a href="/blog/<%=blog._id%>">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<%=blog.coverImageUrl%>" class="card-img-top" alt="...">
+
+                            <div class="options">
+                                <!-- <span class="ms-3">...</span> -->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><button class="dropdown-item" onclick="deleteBlog('<%= blog._id %>')"
+                                                class="delete-btn">Delete</button></li>
+                                        <li><a href="/blog/edit?id=<%= blog.id %>"><button class="dropdown-item"
+                                                    class="edit-btn">Edit</button></a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </div>
+
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <%= blog.body.substring(0,100)%>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                    <% }) %>
+            </div>
         </div>
         <script>
 
             //blog delete
 
-            function deleteBlog(blogId){
-                fetch(`blog/${blogId}`,{
-                    method:'DELETE',
+            function deleteBlog(blogId) {
+                fetch(`blog/${blogId}`, {
+                    method: 'DELETE',
                     headers: { "Content-Type": "application/json" },
                 }).then(response => {
                     if (response.ok) {
@@ -80,9 +85,9 @@
 
             //blog edit
 
-            function editBlog(blogId){
-                fetch(`/blog/edit?id=${blogId}`,{
-                    method:'GET',
+            function editBlog(blogId) {
+                fetch(`/blog/edit?id=${blogId}`, {
+                    method: 'GET',
                     headers: { "Content-Type": "application/json" },
                 }).then(response => {
                     if (response.ok) {
@@ -99,7 +104,7 @@
             }
 
 
-            //pfp cahnge
+            //pfp change
 
             const pfpBtn = document.getElementById("pfp");
             pfpBtn.addEventListener('click', () => {
@@ -107,16 +112,16 @@
             });
 
             // Listen for changes in the file upload field (the event is fired when a file is selected).
-            
-            
+
+
             document.getElementById("pfpInput")
-                .addEventListener('change', function(){
-                    const file=this.files[0];
-                    const formData=new FormData();
-                    formData.append('pfpImage',file);
-                    fetch(`/dashboard/changePfp?id=<%=user._id%>`,{
-                        method:'PATCH',
-                        body:formData
+                .addEventListener('change', function () {
+                    const file = this.files[0];
+                    const formData = new FormData();
+                    formData.append('pfpImage', file);
+                    fetch(`/dashboard/changePfp?id=<%=user._id%>`, {
+                        method: 'PATCH',
+                        body: formData
                     }).then(response => {
                         if (response.ok) {
                             console.log('Profile picture changed successfully');
@@ -128,9 +133,42 @@
                         console.error('Error:', error);
                     });
                 });
-                    // Configure File Reader
+
+
+                //username change
+
+                function nameEdit(){
+
+                    console.log('nameEdit function')
+                    const editor=document.getElementById('username-editor');
+                    const displayName=document.getElementById('username-display');
+
+                    editor.style.display='block';
+                    displayName.style.display='none';
+
+                }
+
+
+                function editRequest(userId){
+                    const newName=document.getElementById('username-edit').value;
+                    console.log(newName)
+                    const data={newName}
+                    fetch(`/dashboard/changeName?id=${userId}`,{
+                        method:'PATCH',
+                        headers:{ "Content-Type": "application/json" },
+                        body:JSON.stringify(data),
+                    }).then(response=>{
+                        if (response.ok){
+                            location.reload();
+                        }
+                    }).catch(err=>{
+                        console.log(`Error changing username ${err}`)
+                    });
+                }
+
 
         </script>
+        <script src="https://kit.fontawesome.com/5d9067be56.js" crossorigin="anonymous"></script>
         <%- include('./partials/scripts') %>
 
 </body>

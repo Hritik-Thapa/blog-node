@@ -40,4 +40,18 @@ router.patch('/changePfp',upload.single('pfpImage'), async (req,res)=>{
     return res.sendStatus(200);
 })
 
+router.patch('/changeName',async (req,res)=>{
+    const _id=req.query.id;
+    console.log(req.body)
+    const newName=req.body.newName;
+    try{
+        await User.findByIdAndUpdate(_id,{$set:{fullName:newName}})
+        return res.sendStatus(200);
+    }catch(err){
+        console.error(err);
+    }
+    
+
+})
+
 module.exports = router;

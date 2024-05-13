@@ -19,8 +19,29 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 
 router.get("/add", async (req, res) => {
-  console.log("id undefined");
   return res.render("addBlog", { user: req.user,isEditing:false });
+});
+
+router.post("/add", upload.single("coverImage"), async (req, res) => {
+  console.log(`add blog data `);
+  console.log(req.body);
+  const { title, body } = req.body;
+  let coverImageUrl=null;
+  
+  if(req.body.coverImage!=='undefined'){
+    
+    console.log(typeof(req.body.coverImage));
+
+    coverImageUrl = `/uploads/blogCover/${req.file.filename}`;
+
+  }
+  const blog = await Blog.create({
+    title,
+    body,
+    createdBy: req.user._id,
+    coverImageUrl,
+  });
+  return res.json({id:blog._id});
 });
 
 router
@@ -60,7 +81,7 @@ router
       console.log(coverImagePath)
     }
 
-    await Blog.findByIdAndUpdate(
+    const blog=await Blog.findByIdAndUpdate(
       id,
       {
         title: title,
@@ -72,21 +93,11 @@ router
       console.log(updatedBlog);
     });
 
-    return res.sendStatus(200);
+    return res.json({id:blog._id});
+
   });
 
-router.post("/add", upload.single("coverImage"), async (req, res) => {
-  console.log(req.body);
-  const { title, body } = req.body;
-  coverImageUrl = `/uploads/blogCover/${req.file.filename}`;
-  const blog = await Blog.create({
-    title,
-    body,
-    createdBy: req.user._id,
-    coverImageUrl: `/uploads/blogCover/${req.file.filename}`,
-  });
-  return res.redirect(`/blog/${blog._id}`);
-});
+
 
 router
   .route("/:_id")

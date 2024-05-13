@@ -61,6 +61,21 @@ li{
 .user-info{
     padding-left: 3em;
 }
+.username-btn{
+    opacity: 0;
+    cursor: pointer;
+
+}
+
+
+.user-info:hover .username-btn{
+    opacity: 1;
+
+}
+
+#username-editor{
+    display: none;
+}
 
 .blogs-container{
     background-color: aliceblue;

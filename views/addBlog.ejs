@@ -9,7 +9,11 @@
 <body>
     <%- include('./partials/nav') %>
         <div class="container mt-4">
-            <form method="<%=locals.blog?'':'POST'%>" action="/blog/<%=locals.blog?`edit?id=` + blog._id:'add'%>"
+            <% if (locals.blog) { %>
+                <%= blog._id %>
+            <% } %>
+            <%=locals.blog?`edit?id=` + blog._id:'add'%>
+            <form method="<%=locals.blog? 'PUT':'POST'%>" action="/blog/<%=locals.blog?`edit?id=` + blog._id:'add'%>"
                 enctype="multipart/form-data" id="blog-data">
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -37,39 +41,38 @@
 
             const form = document.getElementById('blog-data');
             form.addEventListener('submit', function (event) {
-                if (this.getAttribute('method') === "") {
-                    event.preventDefault();
 
-                    console.log('ejs edit trigger')
-                    console.log(document.getElementById('title').value)
 
-                    const formData = new FormData();
 
-                    formData.append('title', document.getElementById('title').value);
-                    formData.append('body', document.getElementById('body').value);
-                    formData.append('coverImage', document.getElementById('coverImage').files[0]);
+                event.preventDefault();
+                console.log('ejs edit trigger')
+                console.log(document.getElementById('title').value)
 
-                    const action = this.getAttribute('action')
+                const formData = new FormData();
 
-                    
-                    if('<%=isEditing%>'){
-                        const blog = '<%= locals.blog%>';
+                formData.append('title', document.getElementById('title').value);
+                formData.append('body', document.getElementById('body').value);
+                formData.append('coverImage', document.getElementById('coverImage').files[0]);
 
-                    }
+                const action = this.getAttribute('action')
 
-                    fetch(action, {
-                        method: "PUT",
-                        body: formData,
-                    }).then(response => {
-                        if (response.ok) {
-                            location.replace(`/blog/${blog._id}`)
-                        }
-                    }).catch(err => {
-                        console.error("Error updating comment:", err);
+
+                if ('<%=isEditing%>') {
+                    const blog = '<%= locals.blog%>';
+
+                }
+
+                fetch(action, {
+                    method: this.getAttribute('method'),
+                    body: formData,
+                }).then(response => response.json()).then(
+                    data => {
+                        location.replace(`/blog/${data.id}`);
                     })
-                };
+                    .catch(err => {
+                        console.error("Error:", err);
+                    })
             }
-
             )
 
         </script>
