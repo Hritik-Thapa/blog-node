@@ -112,7 +112,9 @@
                 </div>
                 <script>
 
+                    //delete request 
 
+                    
                     function deleteComment(commentId) {
                         console.log(commentId)
                         fetch(`/blog/comment/${commentId}`, {
@@ -131,6 +133,8 @@
                             })
                     }
 
+                    //edit button
+
                     function editComment(commentId) {
                         const commentText = document.querySelector('.comment__text');
                         const options = document.querySelector('.options');
@@ -141,6 +145,9 @@
                         options.style.display = 'none';
                         editor.style.display = 'block';
                     }
+
+                    //patch request 
+
 
                     function editRequest(commentId) {
                         console.log(document.querySelector(".comment--edited").value);
