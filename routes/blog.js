@@ -74,14 +74,13 @@ router
     let coverImagePath = null;
 
     // Check if a file was uploaded
-    console.log(req.file.path)
     if (req.file) {
       
       coverImagePath = `/uploads/blogCover/${req.file.filename}`;
       console.log(coverImagePath)
     }
 
-    const blog=await Blog.findByIdAndUpdate(
+    await Blog.findByIdAndUpdate(
       id,
       {
         title: title,
@@ -90,10 +89,12 @@ router
       },
       { new: true }
     ).then((updatedBlog) => {
-      console.log(updatedBlog);
+      return res.json({id:updatedBlog._id});
+
+    }).catch(err=>{
+      console.log(err);
     });
 
-    return res.json({id:blog._id});
 
   });
 

@@ -9,21 +9,18 @@
 <body>
     <%- include('./partials/nav') %>
         <div class="container mt-4">
-            <% if (locals.blog) { %>
-                <%= blog._id %>
-            <% } %>
-            <%=locals.blog?`edit?id=` + blog._id:'add'%>
-            <form method="<%=locals.blog? 'PUT':'POST'%>" action="/blog/<%=locals.blog?`edit?id=` + blog._id:'add'%>"
-                enctype="multipart/form-data" id="blog-data">
+            <%=isEditing?`edit?id=` + blog._id:'add'%>
+            <form method="<%=isEditing ? 'PUT' : 'POST'%>" action="/blog/<%=isEditing ? 'edit?id=' + blog._id : 'add'%>"
+                enctype="multipart/form-data" id="blog-data">          
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" value="<%= locals.blog ? blog.title : '' %>"
+                    <input type="text" class="form-control" id="title" value="<%= isEditing ? blog.title : '' %>"
                         name="title" aria-describedby="emailHelp">
                 </div>
                 <div class="mb-3">
                     <label for="floatingTextarea2">Body</label>
                     <textarea class="form-control body" name="body" id="body"
-                        style="height: 100px"><%= locals.blog ? blog.body : '' %></textarea>
+                        style="height: 100px"><%= isEditing ? blog.body : '' %></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="floatingTextarea2">Cover Image</label>
@@ -42,10 +39,10 @@
             const form = document.getElementById('blog-data');
             form.addEventListener('submit', function (event) {
 
-
+                console.log('ejs edit trigger')
 
                 event.preventDefault();
-                console.log('ejs edit trigger')
+
                 console.log(document.getElementById('title').value)
 
                 const formData = new FormData();
@@ -58,7 +55,7 @@
 
 
                 if ('<%=isEditing%>') {
-                    const blog = '<%= locals.blog%>';
+                    const blog = '<%= isEditing%>';
 
                 }
 
